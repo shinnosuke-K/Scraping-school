@@ -27,10 +27,11 @@ func Scrape(url string) {
 		log.Fatal(err)
 	}
 
-	doc.Find("#app").Each(func(i int, s *goquery.Selection) {
-		band := s.Find("a").Text()
-		title := s.Find("i").Text()
-		fmt.Printf("Review %d: %s - %s\n", i, band, title)
+	doc.Find(env.Selector).Each(func(i int, s *goquery.Selection) {
+		deviValue := s.Find(env.DeviValueSelector).Text()
+		schoolName := s.Find(env.SchoolNameSelector).Text()
+		course := s.Find(env.CourseSelector).Text()
+		fmt.Println(deviValue, schoolName, course)
 	})
 }
 
@@ -53,8 +54,7 @@ func fileScrape() {
 }
 
 func main() {
-	//url := "https://example.com"
-	//Scrape(url)
+	Scrape(env.SearchURL)
 
-	fileScrape()
+	//fileScrape()
 }
