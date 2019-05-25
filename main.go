@@ -35,7 +35,7 @@ func Scrape(url string) {
 }
 
 func fileScrape() {
-	f, err := os.Open(env.DemoURL)
+	f, err := os.Open(env.DemoPath)
 	if err != nil {
 		log.Fatal(err)
 	}
