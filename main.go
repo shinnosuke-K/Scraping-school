@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"scraping-school/env"
 
 	"fmt"
@@ -35,26 +34,6 @@ func Scrape(url string) {
 	})
 }
 
-func fileScrape() {
-	f, err := os.Open(env.DemoPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer f.Close()
-	doc, err := goquery.NewDocumentFromReader(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(doc.Find("#app").Each(func(i int, s *goquery.Selection) {
-		band := s.Find(".result").Text()
-		fmt.Println(band)
-	}))
-}
-
 func main() {
 	Scrape(env.SearchURL)
-
-	//fileScrape()
 }
