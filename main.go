@@ -23,7 +23,7 @@ func createCSVfile() {
 }
 
 func writeCSV(deviValue string, schoolInfo string) {
-	file, err := os.OpenFile("info.csv", os.O_WRONLY|os.O_APPEND, 0600)
+	file, err := os.OpenFile(env.CSVFileName, os.O_WRONLY|os.O_APPEND, 0600)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
