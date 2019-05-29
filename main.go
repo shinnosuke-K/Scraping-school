@@ -9,10 +9,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
-
-var schoolName string
-var course string
 
 func createCSVfile() {
 	if _, err := os.Stat(env.CSVFileName); err != nil {
@@ -22,12 +20,29 @@ func createCSVfile() {
 	}
 }
 
-func writeCSV(deviValue string, schoolInfo string) {
+func writeCSV(deviValue string, schoolName string, course string) {
 	file, err := os.OpenFile(env.CSVFileName, os.O_WRONLY|os.O_APPEND, 0600)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	info := []string{
+		deviValue,
+		schoolName,
+		course,
+	}
+
+	writer := csv.NewWriter(file)
+	writer.Write(info)
+
+	writer.Flush()
+}
+
+func searchName(deviValue string, schoolInfo string) {
+
+	var schoolName string
+	var course string
 
 	schoolInfo = strings.ReplaceAll(schoolInfo, "\n", "")
 	schoolInfo = strings.ReplaceAll(schoolInfo, " ", "")
@@ -42,16 +57,7 @@ func writeCSV(deviValue string, schoolInfo string) {
 						course += courseChar
 						schoolInfo = strings.Replace(schoolInfo, course, "", 1)
 
-						info := []string{
-							deviValue,
-							schoolName,
-							course,
-						}
-
-						writer := csv.NewWriter(file)
-						writer.Write(info)
-
-						writer.Flush()
+						writeCSV(deviValue, schoolName, course)
 
 						schoolName = ""
 						course = ""
@@ -67,7 +73,6 @@ func writeCSV(deviValue string, schoolInfo string) {
 			}
 		}
 	}
-
 }
 
 func Scrape(url string) {
@@ -89,11 +94,12 @@ func Scrape(url string) {
 	doc.Find(env.Selector).Each(func(i int, s *goquery.Selection) {
 		deviValue := s.Find(env.DeviValueSelector).Text()
 		schoolInfo := s.Find("td > ul > li").Text()
-		writeCSV(deviValue, schoolInfo)
+		searchName(deviValue, schoolInfo)
 	})
 }
 
 func main() {
+
 	createCSVfile()
 	Scrape(env.SearchURL)
 }
