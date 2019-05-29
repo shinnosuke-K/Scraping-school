@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func createCSVfile() {
