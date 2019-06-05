@@ -6,21 +6,23 @@ import (
 	"net/http"
 	"os"
 	"scraping-school/env"
+	"scraping-school/prefectures"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func createCSVfile() {
-	if _, err := os.Stat(env.CSVFileName); err != nil {
-		if _, err := os.Create(env.CSVFileName); err != nil {
+func createCSVfile(fileName string) {
+	if _, err := os.Stat("csv/" + fileName + ".csv"); err != nil {
+		if _, err := os.Create("csv/" + fileName + ".csv"); err != nil {
 			log.Fatal(err)
 		}
 	}
 }
 
-func writeCSV(deviValue string, schoolName string, course string) {
-	file, err := os.OpenFile(env.CSVFileName, os.O_WRONLY|os.O_APPEND, 0600)
+func writeCSV(deviValue string, schoolName string, course string, prefecture string) {
+	file, err := os.OpenFile("csv/"+prefecture+".csv", os.O_WRONLY|os.O_APPEND, 0600)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +40,7 @@ func writeCSV(deviValue string, schoolName string, course string) {
 	writer.Flush()
 }
 
-func searchName(deviValue string, schoolInfo string) {
+func searchName(deviValue string, schoolInfo string, prefecture string) {
 
 	var schoolName string
 	var course string
@@ -56,7 +58,7 @@ func searchName(deviValue string, schoolInfo string) {
 						course += courseChar
 						schoolInfo = strings.Replace(schoolInfo, course, "", 1)
 
-						writeCSV(deviValue, schoolName, course)
+						writeCSV(deviValue, schoolName, course, prefecture)
 
 						schoolName = ""
 						course = ""
@@ -74,7 +76,7 @@ func searchName(deviValue string, schoolInfo string) {
 	}
 }
 
-func Scrape(url string) {
+func Scrape(url string, prefecture string) {
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -93,12 +95,16 @@ func Scrape(url string) {
 	doc.Find(env.Selector).Each(func(i int, s *goquery.Selection) {
 		deviValue := s.Find(env.DeviValueSelector).Text()
 		schoolInfo := s.Find("td > ul > li").Text()
-		searchName(deviValue, schoolInfo)
+		searchName(deviValue, schoolInfo, prefecture)
 	})
 }
 
 func main() {
 
-	createCSVfile()
-	Scrape(env.SearchURL)
+	for _, prefecture := range prefectures.Prefectures {
+		createCSVfile(prefecture)
+		Scrape(env.SearchURL+prefecture+env.DeviationURL, prefecture)
+		time.Sleep(5)
+	}
+
 }
