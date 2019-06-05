@@ -1,4 +1,4 @@
 .idea
 env/
-info.csv
 .DS_Store
+csv/*
