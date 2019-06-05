@@ -10,7 +10,7 @@ var Prefectures = [47]string{
 	"fukushima",
 	"ibaraki",
 	"tochigi",
-	"gumma",
+	"gunma",
 	"saitama",
 	"chiba",
 	"tokyo",
