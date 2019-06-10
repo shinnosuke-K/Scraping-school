@@ -1,4 +1,5 @@
 .idea
 env/
 .DS_Store
-csv/*
+csv-name-course/*
+csv-name-url/*

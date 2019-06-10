@@ -2,27 +2,27 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"scraping-school/env"
-	"scraping-school/prefectures"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 func createCSVfile(fileName string) {
-	if _, err := os.Stat("csv/" + fileName + ".csv"); err != nil {
-		if _, err := os.Create("csv/" + fileName + ".csv"); err != nil {
+	if _, err := os.Stat("csv-name-course/" + fileName + ".csv-name-course"); err != nil {
+		if _, err := os.Create("csv-name-course/" + fileName + ".csv-name-course"); err != nil {
 			log.Fatal(err)
 		}
 	}
 }
 
 func writeCSV(deviValue string, schoolName string, course string, prefecture string) {
-	file, err := os.OpenFile("csv/"+prefecture+".csv", os.O_WRONLY|os.O_APPEND, 0600)
+	file, err := os.OpenFile("csv-name-course/"+prefecture+".csv-name-course", os.O_WRONLY|os.O_CREATE, 0600)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -101,10 +101,35 @@ func Scrape(url string, prefecture string) {
 
 func main() {
 
-	for _, prefecture := range prefectures.Prefectures {
-		createCSVfile(prefecture)
-		Scrape(env.SearchURL+prefecture+env.DeviationURL, prefecture)
-		time.Sleep(5)
+	//for _, prefecture := range prefectures.Prefectures {
+	//	createCSVfile(prefecture)
+	//	Scrape(env.SearchURL+prefecture+env.DeviationURL, prefecture)
+	//	time.Sleep(5)
+	//}
+
+	files, err := ioutil.ReadDir("csv-name-course/")
+	if err != nil {
+		panic(err)
 	}
 
+	for _, file := range files {
+		if file.Name() == ".DS_Store" {
+			continue
+		}
+
+		fmt.Println(file.Name())
+		csvFile, err := os.Open("csv-name-course/" + file.Name())
+		if err != nil {
+			panic(err)
+		}
+
+		reader := csv.NewReader(csvFile)
+
+		line, _ := reader.ReadAll()
+
+		for k, v := range line {
+			fmt.Println(k, v[2])
+		}
+		//fmt.Println(line)
+	}
 }
