@@ -2,27 +2,19 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"scraping-school/env"
+	"scraping-school/prefectures"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func createCSVfile(fileName string) {
-	if _, err := os.Stat("csv-name-course/" + fileName + ".csv-name-course"); err != nil {
-		if _, err := os.Create("csv-name-course/" + fileName + ".csv-name-course"); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
-func writeCSV(deviValue string, schoolName string, course string, prefecture string) {
-	file, err := os.OpenFile("csv-name-course/"+prefecture+".csv-name-course", os.O_WRONLY|os.O_CREATE, 0600)
+func writeCSV(deviValue string, schoolName string, course string, filename string) {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +32,7 @@ func writeCSV(deviValue string, schoolName string, course string, prefecture str
 	writer.Flush()
 }
 
-func searchName(deviValue string, schoolInfo string, prefecture string) {
+func searchName(deviValue string, schoolInfo string, filename string) {
 
 	var schoolName string
 	var course string
@@ -58,7 +50,7 @@ func searchName(deviValue string, schoolInfo string, prefecture string) {
 						course += courseChar
 						schoolInfo = strings.Replace(schoolInfo, course, "", 1)
 
-						writeCSV(deviValue, schoolName, course, prefecture)
+						writeCSV(deviValue, schoolName, course, filename)
 
 						schoolName = ""
 						course = ""
@@ -101,35 +93,9 @@ func Scrape(url string, prefecture string) {
 
 func main() {
 
-	//for _, prefecture := range prefectures.Prefectures {
-	//	createCSVfile(prefecture)
-	//	Scrape(env.SearchURL+prefecture+env.DeviationURL, prefecture)
-	//	time.Sleep(5)
-	//}
-
-	files, err := ioutil.ReadDir("csv-name-course/")
-	if err != nil {
-		panic(err)
-	}
-
-	for _, file := range files {
-		if file.Name() == ".DS_Store" {
-			continue
-		}
-
-		fmt.Println(file.Name())
-		csvFile, err := os.Open("csv-name-course/" + file.Name())
-		if err != nil {
-			panic(err)
-		}
-
-		reader := csv.NewReader(csvFile)
-
-		line, _ := reader.ReadAll()
-
-		for k, v := range line {
-			fmt.Println(k, v[2])
-		}
-		//fmt.Println(line)
+	for _, prefecture := range prefectures.Prefectures {
+		CreateCSVfile("csv-name-course/" + prefecture + ".csv")
+		Scrape(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
+		time.Sleep(time.Millisecond * 5)
 	}
 }
