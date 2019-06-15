@@ -1,4 +1,4 @@
-package main
+package scrape
 
 import (
 	"scraping-school/env"
@@ -19,7 +19,7 @@ func Test_scrapeUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := scrapeUrl(tt.schoolName); got != tt.want {
+			if got := ScrapeUrl(tt.schoolName); got != tt.want {
 				t.Errorf("scrapeForUrl() = %v, want %v", got, tt.want)
 			}
 		})

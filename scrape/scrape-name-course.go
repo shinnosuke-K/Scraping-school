@@ -1,4 +1,4 @@
-package main
+package scrape
 
 import (
 	"encoding/csv"
@@ -12,7 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func writeCSVForCourse(deviValue string, schoolName string, course string, filename string) {
+func WriteCSVForCourse(deviValue string, schoolName string, course string, filename string) {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
 	defer file.Close()
 	check.Error(err)
@@ -29,7 +29,7 @@ func writeCSVForCourse(deviValue string, schoolName string, course string, filen
 	writer.Flush()
 }
 
-func searchName(deviValue string, schoolInfo string, filename string) {
+func SearchName(deviValue string, schoolInfo string, filename string) {
 
 	var schoolName string
 	var course string
@@ -47,7 +47,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 						course += courseChar
 						schoolInfo = strings.Replace(schoolInfo, course, "", 1)
 
-						writeCSVForCourse(deviValue, schoolName, course, filename)
+						WriteCSVForCourse(deviValue, schoolName, course, filename)
 
 						schoolName = ""
 						course = ""
@@ -65,7 +65,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 	}
 }
 
-func scrapeCourse(url string, prefecture string) {
+func ScrapeCourse(url string, prefecture string) {
 	res, err := http.Get(url)
 	check.Error(err)
 
@@ -80,6 +80,6 @@ func scrapeCourse(url string, prefecture string) {
 	doc.Find(env.Selector).Each(func(i int, s *goquery.Selection) {
 		deviValue := s.Find(env.DeviValueSelector).Text()
 		schoolInfo := s.Find("td > ul > li").Text()
-		searchName(deviValue, schoolInfo, prefecture)
+		SearchName(deviValue, schoolInfo, prefecture)
 	})
 }

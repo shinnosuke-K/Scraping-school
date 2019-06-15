@@ -1,4 +1,4 @@
-package main
+package scrape
 
 import (
 	"encoding/csv"
@@ -13,7 +13,18 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func scrapeUrl(schoolName string) string {
+type school struct {
+	Devi      string
+	Name      string
+	Course    string
+	SchoolUrl string
+}
+
+func WriteCSVForURL() {
+
+}
+
+func ScrapeUrl(schoolName string) string {
 	// not client
 	//res, err := http.Get("https://www.google.com/search?q=" + url.QueryEscape(schoolName[0]) + "&num=2")
 	//if err != nil {
@@ -53,8 +64,10 @@ func scrapeUrl(schoolName string) string {
 	return schoolURL
 }
 
-func readSchoolName() []string {
-	var schoolName []string
+func ReadSchoolName() []school {
+	//var schoolName [][]string
+
+	schoolInfo := make([]school, 0)
 
 	files, err := ioutil.ReadDir("csv-name-course/")
 	check.Error(err)
@@ -72,10 +85,10 @@ func readSchoolName() []string {
 					break
 				}
 
-				schoolName = append(schoolName, line[1])
+				schoolInfo = append(schoolInfo, school{line[0], line[1], line[2], ""})
 			}
 		}
 	}
 
-	return schoolName
+	return schoolInfo
 }
