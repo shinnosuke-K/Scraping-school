@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/csv"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"scraping-school/check"
 	"scraping-school/env"
 	"strings"
 
@@ -32,21 +32,15 @@ func scrapeUrl(schoolName string) string {
 	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "&num=2"
 
 	res, err := http.NewRequest("GET", searchURL, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	check.Error(err)
 
 	res.Header.Set("User-Agent", env.MacOSOfChrome)
 
 	resp, err := client.Do(res)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	check.Error(err)
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	check.Error(err)
 
 	var schoolURL string
 
@@ -63,16 +57,12 @@ func readSchoolName() []string {
 	var schoolName []string
 
 	files, err := ioutil.ReadDir("csv-name-course/")
-	if err != nil {
-		panic(err)
-	}
+	check.Error(err)
 
 	for _, file := range files {
 		if fileName := file.Name(); fileName != ".DS_Store" {
 			csvFile, err := os.Open("csv-name-course/" + fileName)
-			if err != nil {
-				log.Fatalln(err)
-			}
+			check.Error(err)
 
 			reader := csv.NewReader(csvFile)
 

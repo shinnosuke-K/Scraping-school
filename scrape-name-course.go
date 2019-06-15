@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"scraping-school/check"
 	"scraping-school/env"
 	"strings"
 
@@ -14,9 +15,7 @@ import (
 func writeCSV(deviValue string, schoolName string, course string, filename string) {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
 	defer file.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	check.Error(err)
 
 	info := []string{
 		deviValue,
@@ -68,9 +67,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 
 func scrapeCourse(url string, prefecture string) {
 	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
+	check.Error(err)
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
@@ -78,9 +75,7 @@ func scrapeCourse(url string, prefecture string) {
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	check.Error(err)
 
 	doc.Find(env.Selector).Each(func(i int, s *goquery.Selection) {
 		deviValue := s.Find(env.DeviValueSelector).Text()
