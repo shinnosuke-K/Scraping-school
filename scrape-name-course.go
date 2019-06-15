@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"os"
 	"scraping-school/env"
-	"scraping-school/prefectures"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -68,7 +66,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 	}
 }
 
-func ScrapeForCourse(url string, prefecture string) {
+func scrapeCourse(url string, prefecture string) {
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -89,13 +87,4 @@ func ScrapeForCourse(url string, prefecture string) {
 		schoolInfo := s.Find("td > ul > li").Text()
 		searchName(deviValue, schoolInfo, prefecture)
 	})
-}
-
-func main() {
-
-	for _, prefecture := range prefectures.Prefectures {
-		CreateCSVfile("csv-name-course/" + prefecture + ".csv")
-		ScrapeForCourse(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
-		time.Sleep(time.Millisecond * 5)
-	}
 }
