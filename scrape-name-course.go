@@ -68,7 +68,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 	}
 }
 
-func Scrape(url string, prefecture string) {
+func ScrapeForCourse(url string, prefecture string) {
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -95,7 +95,7 @@ func main() {
 
 	for _, prefecture := range prefectures.Prefectures {
 		CreateCSVfile("csv-name-course/" + prefecture + ".csv")
-		Scrape(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
+		ScrapeForCourse(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
 		time.Sleep(time.Millisecond * 5)
 	}
 }
