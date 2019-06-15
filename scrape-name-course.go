@@ -12,7 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func writeCSV(deviValue string, schoolName string, course string, filename string) {
+func writeCSVForCourse(deviValue string, schoolName string, course string, filename string) {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
 	defer file.Close()
 	check.Error(err)
@@ -47,7 +47,7 @@ func searchName(deviValue string, schoolInfo string, filename string) {
 						course += courseChar
 						schoolInfo = strings.Replace(schoolInfo, course, "", 1)
 
-						writeCSV(deviValue, schoolName, course, filename)
+						writeCSVForCourse(deviValue, schoolName, course, filename)
 
 						schoolName = ""
 						course = ""
