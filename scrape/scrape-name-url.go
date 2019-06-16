@@ -35,9 +35,9 @@ func ScrapeUrl(schoolName string) string {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
+	// not client
 
 	// client
-
 	client := &http.Client{}
 
 	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "&num=2"
@@ -52,6 +52,7 @@ func ScrapeUrl(schoolName string) string {
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	check.Error(err)
+	// client
 
 	var schoolURL string
 
