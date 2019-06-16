@@ -12,7 +12,7 @@ func ScrapeForUrl() {
 	for _, schoolInfo := range schoolInfos {
 		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name)
 		fmt.Println(schoolInfo)
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second)
 	}
 }
 

@@ -18,6 +18,7 @@ type school struct {
 	Name      string
 	Course    string
 	SchoolUrl string
+	FileName  string
 }
 
 func WriteCSVForURL() {
@@ -86,7 +87,7 @@ func ReadSchoolName() []school {
 					break
 				}
 
-				schoolInfo = append(schoolInfo, school{line[0], line[1], line[2], ""})
+				schoolInfo = append(schoolInfo, school{line[0], line[1], line[2], "", fileName})
 			}
 		}
 	}
