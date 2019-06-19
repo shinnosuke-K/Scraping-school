@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"scraping-school/scrape"
 	"time"
 )
@@ -11,8 +10,8 @@ func ScrapeForUrl() {
 
 	for _, schoolInfo := range schoolInfos {
 		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name)
-		fmt.Println(schoolInfo)
-		time.Sleep(time.Second)
+		scrape.WriteCSVForURL(schoolInfo)
+		time.Sleep(time.Second * 2)
 	}
 }
 
