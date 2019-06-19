@@ -21,8 +21,23 @@ type school struct {
 	FileName  string
 }
 
-func WriteCSVForURL() {
+func WriteCSVForURL(schoolInfo school) {
+	file, err := os.OpenFile("csv-name-url/"+schoolInfo.FileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
+	defer file.Close()
+	check.Error(err)
 
+	info := []string{
+		schoolInfo.Devi,
+		schoolInfo.Name,
+		schoolInfo.Course,
+		schoolInfo.SchoolUrl,
+	}
+
+	writer := csv.NewWriter(file)
+	err = writer.Write(info)
+	check.Error(err)
+
+	writer.Flush()
 }
 
 func ScrapeUrl(schoolName string) string {
