@@ -2,13 +2,13 @@ package scrape
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"scraping-school/check"
 	"scraping-school/env"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -56,7 +56,10 @@ func ScrapeUrl(schoolName string) string {
 	// client
 	client := &http.Client{}
 
-	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "&num=2"
+	//searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "&num=2"
+	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "+-wiki+-" + url.QueryEscape(env.DeleteSearchWord) + "&num=2"
+
+	fmt.Println(searchURL)
 
 	res, err := http.NewRequest("GET", searchURL, nil)
 	check.Error(err)
@@ -73,9 +76,10 @@ func ScrapeUrl(schoolName string) string {
 	var schoolURL string
 
 	doc.Find(env.GoogleSelector).Each(func(i int, s *goquery.Selection) {
-		if tmpURL, _ := s.Attr("href"); strings.Contains(tmpURL, "ed.jp/") || strings.Contains(tmpURL, "ac.jp/") {
-			schoolURL = tmpURL
-		}
+		//if tmpURL, _ := s.Attr("href"); strings.Contains(tmpURL, "ed.jp") || strings.Contains(tmpURL, "ac.jp") {
+		//	schoolURL = tmpURL
+		//}
+		schoolURL, _ = s.Attr("href")
 	})
 
 	return schoolURL
