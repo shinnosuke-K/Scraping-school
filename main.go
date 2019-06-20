@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"scraping-school/scrape"
 	"time"
 )
@@ -11,7 +12,7 @@ func ScrapeForUrl() {
 	for _, schoolInfo := range schoolInfos {
 		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name)
 		scrape.WriteCSVForURL(schoolInfo)
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 2 * time.Duration(rand.Int()))
 	}
 }
 
