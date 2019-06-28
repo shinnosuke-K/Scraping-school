@@ -6,13 +6,18 @@ import (
 	"time"
 )
 
+func random(min, max float64) float64 {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Float64()*(max-min) + min
+}
+
 func ScrapeForUrl() {
 	schoolInfos := scrape.ReadSchoolName()
 
 	for _, schoolInfo := range schoolInfos {
-		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name)
+		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name, schoolInfo.FileName)
 		scrape.WriteCSVForURL(schoolInfo)
-		time.Sleep(time.Second * 2 * time.Duration(rand.Int()))
+		time.Sleep(time.Second * time.Duration(random(0.0, 5.0)))
 	}
 }
 
