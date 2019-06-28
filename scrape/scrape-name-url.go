@@ -9,6 +9,7 @@ import (
 	"os"
 	"scraping-school/check"
 	"scraping-school/env"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -40,7 +41,7 @@ func WriteCSVForURL(schoolInfo school) {
 	writer.Flush()
 }
 
-func ScrapeUrl(schoolName string) string {
+func ScrapeUrl(schoolName, fileName string) string {
 	// not client
 	//res, err := http.Get("https://www.google.com/search?q=" + url.QueryEscape(schoolName[0]) + "&num=2")
 	//if err != nil {
@@ -56,8 +57,7 @@ func ScrapeUrl(schoolName string) string {
 	// client
 	client := &http.Client{}
 
-	//searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "&num=2"
-	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "+-wiki+-" + url.QueryEscape(env.DeleteSearchWord) + "&num=2"
+	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(schoolName) + "+-wiki+-" + url.QueryEscape(env.DeleteSearchWord) + "+" + strings.Replace(fileName, ".csv", "", 1) + "&num=1"
 
 	fmt.Println(searchURL)
 
@@ -76,9 +76,6 @@ func ScrapeUrl(schoolName string) string {
 	var schoolURL string
 
 	doc.Find(env.GoogleSelector).Each(func(i int, s *goquery.Selection) {
-		//if tmpURL, _ := s.Attr("href"); strings.Contains(tmpURL, "ed.jp") || strings.Contains(tmpURL, "ac.jp") {
-		//	schoolURL = tmpURL
-		//}
 		schoolURL, _ = s.Attr("href")
 	})
 
@@ -86,7 +83,6 @@ func ScrapeUrl(schoolName string) string {
 }
 
 func ReadSchoolName() []school {
-	//var schoolName [][]string
 
 	schoolInfo := make([]school, 0)
 
