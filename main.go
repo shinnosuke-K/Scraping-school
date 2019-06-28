@@ -1,30 +1,35 @@
 package main
 
 import (
-	"fmt"
-	"scraping-school/env"
-	"scraping-school/prefectures"
+	"math/rand"
+	"scraping-school/scrape"
 	"time"
 )
 
-func scrapeForUrl() {
-	schoolNames := readSchoolName()
+func random(min, max float64) float64 {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Float64()*(max-min) + min
+}
 
-	for _, schoolName := range schoolNames {
-		fmt.Println(scrapeUrl(schoolName))
-		time.Sleep(time.Second * 3)
+func ScrapeForUrl() {
+	schoolInfos := scrape.ReadSchoolName()
+
+	for _, schoolInfo := range schoolInfos {
+		schoolInfo.SchoolUrl = scrape.ScrapeUrl(schoolInfo.Name, schoolInfo.FileName)
+		scrape.WriteCSVForURL(schoolInfo)
+		time.Sleep(time.Second * time.Duration(random(0.0, 5.0)))
 	}
 }
 
-func scrapeForCourse() {
-	for _, prefecture := range prefectures.Prefectures {
-		CreateCSVfile("csv-name-course/" + prefecture + ".csv")
-		scrapeCourse(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
-		time.Sleep(time.Millisecond * 5)
-	}
-}
+//func scrapeForCourse() {
+//	for _, prefecture := range prefectures.Prefectures {
+//		CreateCSVfile("csv-name-course/" + prefecture + ".csv")
+//		scrapeCourse(env.SearchURL+prefecture+env.DeviationURL, "csv-name-course/"+prefecture+".csv")
+//		time.Sleep(time.Millisecond * 5)
+//	}
+//}
 
 func main() {
 	//scrapeForCourse()
-	scrapeForUrl()
+	ScrapeForUrl()
 }
