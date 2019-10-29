@@ -2,9 +2,16 @@
 
 高校名とコース，偏差値をスクレイピングするプログラムです．
 
-スクレイピングしたサイトのURLとselectorなどは.gitignoreファイルに書いて隠しています．
-
 スクレイピングには [goquery](https://github.com/PuerkitoBio/goquery) を使用しました．
+
+
+## スクレイピングしたサイト
+
+スクレイピングしたサイトは欲しい情報によって分けました
+
+高校名、コース、偏差値→.gitignoreで隠したサイト
+
+Url→グーグル検索結果
 
 
 ## Directory
